@@ -1,0 +1,21 @@
+{
+  "name": "payments-analytics-pipeline",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "innoverio.vscode-dbt-power-user",
+        "randomfractalsinc.duckdb-sql-tools"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  },
+  "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt",
+  "remoteEnv": {
+    "DBT_PROFILES_DIR": "${containerWorkspaceFolder}"
+  }
+}

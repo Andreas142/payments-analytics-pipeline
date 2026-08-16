@@ -1,0 +1,10 @@
+data/landing/*.parquet
+target/
+dbt_packages/
+logs/
+*.duckdb
+*.duckdb.wal
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
