@@ -1,0 +1,8 @@
+dbt_payments:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('DBT_ROOT', '/workspaces/payments-analytics-pipeline') }}/dbt_payments/dev.duckdb"
+      threads: 4
+      external_root: "{{ env_var('DBT_ROOT', '/workspaces/payments-analytics-pipeline') }}"

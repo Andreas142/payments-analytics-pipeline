@@ -8,3 +8,5 @@ __pycache__/
 *.py[cod]
 .venv/
 .DS_Store
+# Geolocation CSV is large (~58MB) and not needed for the payments schema
+data/raw/olist_geolocation_dataset.csv
