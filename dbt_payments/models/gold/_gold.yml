@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: fct_order_reconciliation
+    description: >
+      Order-level reconciliation of payments vs order value. One row per order.
+      recon_status triages each order as reconciled, an explained difference,
+      or a genuine break to investigate.
+    columns:
+      - name: order_id
+        description: "Primary key - one row per order."
+        tests:
+          - unique
+          - not_null
+      - name: recon_status
+        description: "Reconciliation classification."
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - reconciled
+                - missing_items
+                - missing_payment
+                - overpaid_or_interest
+                - underpaid
+                - voucher_reduced
