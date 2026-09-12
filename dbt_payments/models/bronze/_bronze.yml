@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: stg_orders
+    columns:
+      - name: order_id
+        tests: [unique, not_null]
+      - name: customer_id
+        tests: [not_null]
+
+  - name: stg_customers
+    columns:
+      - name: customer_id
+        tests: [unique, not_null]
+
+  - name: stg_order_items
+    columns:
+      - name: order_id
+        description: "Every order_item must belong to a real order."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: product_id
+        tests: [not_null]
+
+  - name: stg_order_payments
+    columns:
+      - name: order_id
+        description: "Every payment must belong to a real order."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: payment_type
+        tests:
+          - accepted_values:
+              values: [credit_card, boleto, voucher, debit_card, not_defined]
