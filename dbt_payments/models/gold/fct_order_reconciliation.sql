@@ -1,10 +1,10 @@
--- Gold: order-level reconciliation of payments vs order value.
--- One row per order (full outer join so we keep orders that exist on only one
--- side). Computes the difference and classifies it, so breaks are explained,
--- not just flagged. This is the domain showpiece.
+-- Gold: order-level reconciliation of payments vs order value. One row per order.
+-- Full outer join keeps orders present on only one side. Each order is classified
+-- so breaks are explained, not just flagged. Now also carries the order month and
+-- dominant payment method for reporting.
 
 with orders as (
-    select order_id, order_status from {{ ref('stg_orders') }}
+    select order_id, order_status, ordered_at from {{ ref('stg_orders') }}
 ),
 
 paid as (
@@ -19,11 +19,14 @@ joined as (
     select
         coalesce(p.order_id, v.order_id)          as order_id,
         o.order_status,
+        o.ordered_at,
+        strftime(o.ordered_at, '%Y-%m')           as order_month,
         v.order_value,
         v.item_count,
         p.total_paid,
         p.payment_row_count,
         p.used_voucher,
+        p.dominant_payment_type,
         round(coalesce(p.total_paid, 0)
               - coalesce(v.order_value, 0), 2)     as paid_minus_value
     from paid as p
