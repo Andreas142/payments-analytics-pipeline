@@ -1,0 +1,38 @@
+name: dbt CI
+
+# Build all models and run all tests on every push and PR to main,
+# against the committed data sample. Self-contained, fast, no secrets.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DBT_ROOT: ${{ github.workspace }}
+      DBT_PROFILES_DIR: ${{ github.workspace }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install dbt packages (dbt-expectations)
+        working-directory: dbt_payments
+        run: dbt deps
+
+      - name: Land the sample data as Parquet
+        run: python scripts/ingest.py --raw-dir data/sample
+
+      - name: Build and test the dbt project
+        working-directory: dbt_payments
+        run: dbt build
